@@ -24,8 +24,24 @@
 </style>
   </head>
   <body>
-    <center>IP: {{ ip }}</center>
     <form method="post" id="form">
+      <center>
+        IP: {{ ip }}, Codename:
+        <select name="codename">
+          <option value="all" default>all</option>
+          <option value="sid">sid</option>
+          <option value="buster">buster</option>
+          <option value="stretch">stretch</option>
+          <option value="jessie">jessie</option>
+          <option value="wheezy">wheezy</option>
+          <option value="squeeze">squeeze</option>
+          <option value="artful">artful</option>
+          <option value="zesty">zesty</option>
+          <option value="xenial">xenial</option>
+          <option value="trusty">trusty</option>
+          <option value="precise">precise</option>
+        </select>
+      </center>
       <textarea type="textarea" name="preseed" id="preseed">{{ preseed }}</textarea>
       <textarea type="textarea" name="late_command" id="late_command">{{ late_command }}</textarea>
       <center>Source Code: <a href="https://github.com/fourdollars/diaas">https://github.com/fourdollars/diaas</a> <button type="submit" value="Save">Save</button></center>
