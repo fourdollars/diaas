@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>d-i as a service</title>
+<style>
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+.preseed {
+  width: 50%;
+  height: 100vh;
+  float: left;
+  resize: none;
+}
+.late_command {
+  width: 50%;
+  height: 100vh;
+  float: right;
+  resize: none;
+}
+</style>
+  </head>
+  <body>
+    <form method="post">
+      <textarea type="textarea" name="preseed" class="preseed">{{ preseed }}</textarea>
+      <textarea type="textarea" name="late_command" class="late_command">{{ late_command }}</textarea>
+    </form>
+  </body>
+</html>
