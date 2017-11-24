@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import os
 from flask import Flask, Response, Markup, request, render_template
@@ -18,7 +19,7 @@ def get_file_path(remote_addr, file_name, codename=None):
 def get_file_context(remote_addr, file_name, codename=None):
     file_path = get_file_path(remote_addr, file_name, codename)
     with open(file_path) as f:
-        return f.read()
+        return f.read().decode("utf-8")
 
 series = (
         "sid",
@@ -46,10 +47,10 @@ def save_file_context(remote_addr, preseed, late_command, codename=None):
             os.makedirs(folder)
     file_path = os.path.join(folder, 'preseed.cfg')
     with open(file_path, 'w') as f:
-        f.write(preseed)
+        f.write(preseed.encode("utf-8"))
     file_path = os.path.join(folder, 'late_command')
     with open(file_path, 'w') as f:
-        f.write(late_command)
+        f.write(late_command.encode("utf-8"))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -77,10 +78,10 @@ def preseed(codename):
     print(dir(request))
     print(request.url_root)
     with open(file_path) as f:
-        return Response(f.read() + late_command, mimetype='text/plain')
+        return Response(f.read().decode("utf-8") + late_command, mimetype='text/plain')
 
 @app.route('/d-i/<codename>/late_command')
 def late_command(codename):
     file_path = get_file_path(request.remote_addr, 'late_command', codename)
     with open(file_path) as f:
-        return Response(f.read(), mimetype='text/plain')
+        return Response(f.read().decode("utf-8") , mimetype='text/plain')
