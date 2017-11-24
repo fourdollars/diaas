@@ -54,6 +54,7 @@ def save_file_context(remote_addr, preseed, late_command, codename=None):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     remote_addr = request.remote_addr
+    codename = None
     if request.method == 'POST':
         save_file_context(remote_addr, request.form['preseed'], request.form['late_command'], request.form['codename'])
         codename = request.form['codename']
