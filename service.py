@@ -47,10 +47,10 @@ def save_file_context(remote_addr, preseed, late_command, codename=None):
             os.makedirs(folder)
     file_path = os.path.join(folder, 'preseed.cfg')
     with open(file_path, 'w') as f:
-        f.write(preseed.encode("utf-8"))
+        f.write(preseed.encode("utf-8")+"\n")
     file_path = os.path.join(folder, 'late_command')
     with open(file_path, 'w') as f:
-        f.write(late_command.encode("utf-8"))
+        f.write(late_command.encode("utf-8")+"\n")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -74,7 +74,7 @@ def preseed(codename):
     late_command = "\nd-i preseed/late_command string\
  in-target wget {url}d-i/{codename}/late_command ;\
  in-target sh late_command ;\
- in-target rm late_command".format(url=request.url_root, codename=codename)
+ in-target rm late_command\n".format(url=request.url_root, codename=codename)
     print(dir(request))
     print(request.url_root)
     with open(file_path) as f:
