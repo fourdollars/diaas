@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from flask import Flask, Response, Markup, request, render_template
+from flask import Flask, Response, Markup, request, render_template, make_response
 
 app = Flask(__name__)
 
@@ -59,6 +59,8 @@ def index():
     if request.method == 'POST':
         save_file_context(remote_addr, request.form['preseed'], request.form['late_command'], request.form['codename'])
         codename = request.form['codename']
+    else: # request.method == 'GET'
+        codename = request.cookies.get('codename')
     # Sanity check
     if codename and codename in series:
         pass
@@ -68,8 +70,17 @@ def index():
     late_command = get_file_context(remote_addr, 'late_command', codename)
     option = '<option value="all">all</option>'
     for each in series:
-        option = option + "\n          <option value=\"{codename}\">{codename}</option>".format(codename=each)
-    return render_template('preseed.html', ip=remote_addr, preseed=preseed, late_command=late_command, option=option)
+        option = option + "\n          <option value=\"{codename}\"".format(codename=each)
+        if codename == each:
+            option = option + " selected"
+        option = option + ">{codename}</option>".format(codename=each)
+    response = make_response(render_template('preseed.html',
+        ip=remote_addr, preseed=preseed, late_command=late_command, option=option))
+    if codename:
+        response.set_cookie('codename', codename)
+    else:
+        response.set_cookie('codename', 'all')
+    return response
 
 @app.route('/<codename>/preseed.cfg')
 @app.route('/d-i/<codename>/preseed.cfg')
