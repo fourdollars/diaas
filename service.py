@@ -68,6 +68,7 @@ def index():
     late_command = get_file_context(remote_addr, 'late_command', codename)
     return render_template('preseed.html', ip=remote_addr, preseed=preseed, late_command=late_command)
 
+@app.route('/<codename>/preseed.cfg')
 @app.route('/d-i/<codename>/preseed.cfg')
 def preseed(codename):
     file_path = get_file_path(request.remote_addr, 'preseed.cfg', codename)
@@ -80,6 +81,7 @@ def preseed(codename):
     with open(file_path) as f:
         return Response(f.read().decode("utf-8") + late_command, mimetype='text/plain')
 
+@app.route('/<codename>/late_command')
 @app.route('/d-i/<codename>/late_command')
 def late_command(codename):
     file_path = get_file_path(request.remote_addr, 'late_command', codename)
