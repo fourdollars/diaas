@@ -58,8 +58,8 @@ def index():
     codename = None
     if request.method == 'POST':
         save_file_context(remote_addr,
-                request.form['preseed'].replace("\r\n", "\n"),
-                request.form['late_command'].replace("\r\n", "\n"),
+                request.form['preseed'].replace("\r\n", "\n").rstrip(),
+                request.form['late_command'].replace("\r\n", "\n").rstrip(),
                 request.form['codename'])
         codename = request.form['codename']
     else: # request.method == 'GET'
