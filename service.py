@@ -66,7 +66,10 @@ def index():
         codename = None
     preseed = get_file_context(remote_addr, 'preseed.cfg', codename)
     late_command = get_file_context(remote_addr, 'late_command', codename)
-    return render_template('preseed.html', ip=remote_addr, preseed=preseed, late_command=late_command)
+    option = '<option value="all">all</option>'
+    for each in series:
+        option = option + "\n          <option value=\"{codename}\">{codename}</option>".format(codename=each)
+    return render_template('preseed.html', ip=remote_addr, preseed=preseed, late_command=late_command, option=option)
 
 @app.route('/<codename>/preseed.cfg')
 @app.route('/d-i/<codename>/preseed.cfg')
