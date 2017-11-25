@@ -57,7 +57,10 @@ def index():
     remote_addr = request.remote_addr
     codename = None
     if request.method == 'POST':
-        save_file_context(remote_addr, request.form['preseed'], request.form['late_command'], request.form['codename'])
+        save_file_context(remote_addr,
+                request.form['preseed'].replace("\r\n", "\n"),
+                request.form['late_command'].replace("\r\n", "\n"),
+                request.form['codename'])
         codename = request.form['codename']
     else: # request.method == 'GET'
         codename = request.cookies.get('codename')
