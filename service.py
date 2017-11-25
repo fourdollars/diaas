@@ -68,21 +68,25 @@ def index():
     if codename and codename in series:
         pass
     else:
-        codename = None
+        codename = 'any'
+    preseed_path = "<a href=\"" + request.url_root + "d-i/" + codename + "/preseed.cfg\">preseed.cfg</a>"
+    late_command_path = "<a href=\"" + request.url_root + "d-i/" + codename + "/late_command\">late_command</a>"
     preseed = get_file_context(remote_addr, 'preseed.cfg', codename)
     late_command = get_file_context(remote_addr, 'late_command', codename)
-    option = '<option value="all">all</option>'
+    option = '<option value="any">any</option>'
     for each in series:
         option = option + "\n          <option value=\"{codename}\"".format(codename=each)
         if codename == each:
             option = option + " selected"
         option = option + ">{codename}</option>".format(codename=each)
     response = make_response(render_template('preseed.html',
-        ip=remote_addr, preseed=preseed, late_command=late_command, option=option))
-    if codename:
-        response.set_cookie('codename', codename)
-    else:
-        response.set_cookie('codename', 'all')
+        ip=remote_addr,
+        preseed=preseed,
+        late_command=late_command,
+        preseed_path=preseed_path,
+        late_command_path=late_command_path,
+        option=option))
+    response.set_cookie('codename', codename)
     return response
 
 @app.route('/<codename>/preseed.cfg')

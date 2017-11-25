@@ -26,11 +26,13 @@
   <body>
     <form method="post" id="form">
       <center>
+        {{ preseed_path | safe }}
         IP: {{ ip }}, Codename:
         <select name="codename">
-          {{ option|safe }}
+          {{ option | safe }}
         </select>
         <button type="submit" value="Save">Save</button>
+        {{ late_command_path | safe }}
       </center>
       <textarea type="textarea" name="preseed" id="preseed">{{ preseed }}</textarea>
       <textarea type="textarea" name="late_command" id="late_command">{{ late_command }}</textarea>
