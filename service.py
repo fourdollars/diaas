@@ -1,25 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
+import os, re
 from flask import Flask, Response, Markup, request, render_template, make_response
-
-app = Flask(__name__)
-
-def get_file_path(remote_addr, file_name, codename=None):
-    if codename:
-        file_path = os.path.join(app.root_path, 'ip', remote_addr, codename, file_name)
-        if os.path.exists(file_path):
-            return file_path
-    file_path = os.path.join(app.root_path, 'ip', remote_addr, file_name)
-    if os.path.exists(file_path):
-        return file_path
-    return os.path.join(app.root_path, file_name)
-
-def get_file_context(remote_addr, file_name, codename=None):
-    file_path = get_file_path(remote_addr, file_name, codename)
-    with open(file_path) as f:
-        return f.read().decode("utf-8")
 
 series = (
         "sid",
@@ -34,6 +17,43 @@ series = (
         "trusty",
         "precise",
         )
+
+app = Flask(__name__)
+_pattern = re.compile("^([0-9a-f]{8})$")
+
+def get_file_path(remote_addr, file_name, codename=None, iphex=None):
+    ip_addr = ''
+    if iphex and _pattern.match(iphex):
+        for i in (0,2,4,6):
+            ip_addr = ip_addr + str(int("0x" + iphex[i:i+2], 16)) + '.'
+        else:
+            ip_addr = ip_addr[:-1]
+
+    if codename:
+        if ip_addr:
+            file_path = os.path.join(app.root_path, 'ip', ip_addr, codename, file_name)
+            if os.path.exists(file_path):
+                return file_path
+
+        file_path = os.path.join(app.root_path, 'ip', remote_addr, codename, file_name)
+        if os.path.exists(file_path):
+            return file_path
+
+    if ip_addr:
+        file_path = os.path.join(app.root_path, 'ip', ip_addr, file_name)
+        if os.path.exists(file_path):
+            return file_path
+
+    file_path = os.path.join(app.root_path, 'ip', remote_addr, file_name)
+    if os.path.exists(file_path):
+        return file_path
+
+    return os.path.join(app.root_path, file_name)
+
+def get_file_context(remote_addr, file_name, codename=None, iphex=None):
+    file_path = get_file_path(remote_addr, file_name, codename, iphex)
+    with open(file_path) as f:
+        return f.read().decode("utf-8")
 
 def save_file_context(remote_addr, preseed, late_command, codename=None):
     # Sanity check
@@ -56,6 +76,7 @@ def save_file_context(remote_addr, preseed, late_command, codename=None):
 def index():
     remote_addr = request.remote_addr
     codename = None
+    ip = None
     if request.method == 'POST':
         save_file_context(remote_addr,
                 request.form['preseed'].replace("\r\n", "\n").rstrip(),
@@ -63,7 +84,10 @@ def index():
                 request.form['codename'])
         codename = request.form['codename']
     else: # request.method == 'GET'
-        codename = request.cookies.get('codename')
+        codename = request.args.get('codename')
+        if not codename:
+            codename = request.cookies.get('codename')
+        ip = request.args.get('ip')
     # Sanity check
     if codename and codename in series:
         pass
@@ -71,21 +95,24 @@ def index():
         codename = 'any'
     preseed_path = "<a href=\"" + request.url_root + "d-i/" + codename + "/preseed.cfg\">preseed.cfg</a>"
     late_command_path = "<a href=\"" + request.url_root + "d-i/" + codename + "/late_command\">late_command</a>"
-    preseed = get_file_context(remote_addr, 'preseed.cfg', codename)
-    late_command = get_file_context(remote_addr, 'late_command', codename)
+    preseed = get_file_context(remote_addr, 'preseed.cfg', codename, ip)
+    late_command = get_file_context(remote_addr, 'late_command', codename, ip)
     option = '<option value="any">any</option>'
     for each in series:
         option = option + "\n          <option value=\"{codename}\"".format(codename=each)
         if codename == each:
             option = option + " selected"
         option = option + ">{codename}</option>".format(codename=each)
+    ip = "%02x%02x%02x%02x" % tuple(int(num) for num in remote_addr.split('.'))
+    share = "<a href=\"{url}\">{url}</a>".format(url=request.url_root+"?ip="+ip+"&codename="+codename)
     response = make_response(render_template('preseed.html',
         ip=remote_addr,
         preseed=preseed,
         late_command=late_command,
         preseed_path=preseed_path,
         late_command_path=late_command_path,
-        option=option))
+        option=option,
+        share=share))
     response.set_cookie('codename', codename)
     return response
 
