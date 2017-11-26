@@ -1,4 +1,6 @@
-# d-i (debian-installer) as a service
+# debian-installer (d-i) as a service
+
+## Setup the service
 
 `pip install flask`
 
