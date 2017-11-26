@@ -34,6 +34,9 @@ def get_file_path(remote_addr, file_name, codename=None, iphex=None):
             file_path = os.path.join(app.root_path, 'ip', ip_addr, codename, file_name)
             if os.path.exists(file_path):
                 return file_path
+            file_path = os.path.join(app.root_path, 'ip', ip_addr, file_name)
+            if os.path.exists(file_path):
+                return file_path
 
         file_path = os.path.join(app.root_path, 'ip', remote_addr, codename, file_name)
         if os.path.exists(file_path):
@@ -125,12 +128,14 @@ def index():
 @app.route('/d-i/<codename>/preseed.cfg')
 def preseed(codename):
     file_path = get_file_path(request.remote_addr, 'preseed.cfg', codename)
+    if request.url_root.endswith("d-i/"):
+        url_root = request.url_root
+    else:
+        url_root = request.url_root + "d-i/"
     late_command = "\nd-i preseed/late_command string\
- in-target wget {url}d-i/{codename}/late_command ;\
+ in-target wget {url}{codename}/late_command ;\
  in-target sh late_command ;\
- in-target rm late_command\n".format(url=request.url_root, codename=codename)
-    print(dir(request))
-    print(request.url_root)
+ in-target rm late_command\n".format(url=url_root, codename=codename)
     with open(file_path) as f:
         return Response(f.read().decode("utf-8") + late_command, mimetype='text/plain')
 
