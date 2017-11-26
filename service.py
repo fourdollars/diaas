@@ -21,11 +21,11 @@ series = (
 app = Flask(__name__)
 _pattern = re.compile("^([0-9a-f]{8})$")
 
-def get_file_path(remote_addr, file_name, codename=None, iphex=None):
+def get_file_path(remote_addr, file_name, codename=None, code=None):
     ip_addr = ''
-    if iphex and _pattern.match(iphex):
+    if code and _pattern.match(code):
         for i in (0,2,4,6):
-            ip_addr = ip_addr + str(int("0x" + iphex[i:i+2], 16)) + '.'
+            ip_addr = ip_addr + str(int("0x" + code[i:i+2], 16)) + '.'
         else:
             ip_addr = ip_addr[:-1]
 
@@ -53,8 +53,8 @@ def get_file_path(remote_addr, file_name, codename=None, iphex=None):
 
     return os.path.join(app.root_path, file_name)
 
-def get_file_context(remote_addr, file_name, codename=None, iphex=None):
-    file_path = get_file_path(remote_addr, file_name, codename, iphex)
+def get_file_context(remote_addr, file_name, codename=None, code=None):
+    file_path = get_file_path(remote_addr, file_name, codename, code)
     with open(file_path) as f:
         return f.read().decode("utf-8")
 
@@ -83,7 +83,7 @@ def index():
     else:
         url_root = request.url_root + "d-i/"
     codename = None
-    ip = None
+    code = None
     if request.method == 'POST':
         save_file_context(remote_addr,
                 request.form['preseed'].replace("\r\n", "\n").rstrip(),
@@ -94,7 +94,7 @@ def index():
         codename = request.args.get('codename')
         if not codename:
             codename = request.cookies.get('codename')
-        ip = request.args.get('ip')
+        code = request.args.get('share')
     # Sanity check
     if codename and codename in series:
         pass
@@ -102,16 +102,16 @@ def index():
         codename = 'any'
     preseed_path = "<a href=\"" + url_root + codename + "/preseed.cfg\">preseed.cfg</a>"
     late_command_path = "<a href=\"" + url_root + codename + "/late_command\">late_command</a>"
-    preseed = get_file_context(remote_addr, 'preseed.cfg', codename, ip)
-    late_command = get_file_context(remote_addr, 'late_command', codename, ip)
+    preseed = get_file_context(remote_addr, 'preseed.cfg', codename, code)
+    late_command = get_file_context(remote_addr, 'late_command', codename, code)
     option = '<option value="any">any</option>'
     for each in series:
         option = option + "\n          <option value=\"{codename}\"".format(codename=each)
         if codename == each:
             option = option + " selected"
         option = option + ">{codename}</option>".format(codename=each)
-    ip = "%02x%02x%02x%02x" % tuple(int(num) for num in remote_addr.split('.'))
-    share = "<a href=\"{url}\">{url}</a>".format(url=request.url_root+"?ip="+ip+"&codename="+codename)
+    code = "%02x%02x%02x%02x" % tuple(int(num) for num in remote_addr.split('.'))
+    share = "<a href=\"{url}\">{url}</a>".format(url=request.url_root+"?share="+code+"&codename="+codename)
     response = make_response(render_template('preseed.html',
         ip=remote_addr,
         preseed=preseed,
