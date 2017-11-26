@@ -116,7 +116,8 @@ def index():
         preseed_path=preseed_path,
         late_command_path=late_command_path,
         option=option,
-        share=share))
+        share=share,
+        url_root=request.url_root))
     response.set_cookie('codename', codename)
     return response
 
