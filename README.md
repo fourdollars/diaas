@@ -12,6 +12,8 @@
 
 `auto url=sylee.org`
 
+  * Check [B.2. Using preseeding - B.2.3. Auto mode](https://www.debian.org/releases/stable/amd64/apbs02.html.en#preseed-auto) to see how Debian stable works.
+
 ### Ubuntu
 
  * Download an official Ubuntu [netboot](http://cdimage.ubuntu.com/netboot/) image.
@@ -21,6 +23,8 @@
    parameters.
 
 `auto=true url=sylee.org netcfg/get_hostname=ubuntu`
+
+  * Check [B.2. Using preseeding - B.2.3. Auto mode](https://help.ubuntu.com/lts/installation-guide/amd64/apbs02.html#preseed-auto) to see how Ubuntu LTS works.
 
 ## Setup the service
 
