@@ -75,6 +75,10 @@ def save_file_context(remote_addr, preseed, late_command, codename=None):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     remote_addr = request.remote_addr
+    if request.url_root.endswith("d-i/"):
+        url_root = request.url_root
+    else:
+        url_root = request.url_root + "d-i/"
     codename = None
     ip = None
     if request.method == 'POST':
@@ -93,8 +97,8 @@ def index():
         pass
     else:
         codename = 'any'
-    preseed_path = "<a href=\"" + request.url_root + "d-i/" + codename + "/preseed.cfg\">preseed.cfg</a>"
-    late_command_path = "<a href=\"" + request.url_root + "d-i/" + codename + "/late_command\">late_command</a>"
+    preseed_path = "<a href=\"" + url_root + codename + "/preseed.cfg\">preseed.cfg</a>"
+    late_command_path = "<a href=\"" + url_root + codename + "/late_command\">late_command</a>"
     preseed = get_file_context(remote_addr, 'preseed.cfg', codename, ip)
     late_command = get_file_context(remote_addr, 'late_command', codename, ip)
     option = '<option value="any">any</option>'
