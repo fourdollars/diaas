@@ -30,10 +30,10 @@ window.history.replaceState('remove parameters', 'debian-installer (d-i) as a se
     <form method="post" id="form">
       <center>
         {{ preseed_path | safe }}
-        IP: {{ ip }}, Codename:
-        <select name="codename"
+        IP: {{ ip }}, Series:
+        <select name="series"
           onchange="this.options[this.selectedIndex].value &&
-          (window.location = '{{ url_root }}?codename=' + this.options[this.selectedIndex].value);">
+          (window.location = '{{ url_root }}?series=' + this.options[this.selectedIndex].value);">
           {{ option | safe }}
         </select>
         <button type="submit" value="Save">Save</button>
