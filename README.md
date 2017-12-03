@@ -24,6 +24,6 @@
 
 ## Setup the service
 
-`pip install flask`
+`pip install flask distro-info`
 
 `FLASK_DEBUG=1 FLASK_APP=service.py flask run`

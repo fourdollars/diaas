@@ -4,20 +4,12 @@
 import os, re
 from flask import Flask, Response, Markup, request, render_template, make_response
 
-menu = (
-        "sid",
-        "buster",
-        "stretch",
-        "jessie",
-        "wheezy",
-        "squeeze",
-        "bionic",
-        "artful",
-        "zesty",
-        "xenial",
-        "trusty",
-        "precise",
-        )
+from distro_info import DebianDistroInfo, UbuntuDistroInfo
+
+debian = DebianDistroInfo()
+ubuntu = UbuntuDistroInfo()
+
+supported = list(reversed(debian.supported())) + list(reversed(ubuntu.supported()))
 
 app = Flask(__name__)
 _pattern = re.compile("^([0-9a-f]{8})$")
@@ -33,7 +25,7 @@ def get_file_path(remote_addr, file_name, series=None, code=None):
         else:
             ip_addr = ip_addr[:-1]
 
-    if series and series in menu:
+    if series and series in supported:
         if ip_addr:
             file_path = os.path.join(app.root_path, 'ip', ip_addr, series, file_name)
             if os.path.exists(file_path):
@@ -64,7 +56,7 @@ def get_file_context(remote_addr, file_name, series=None, code=None):
 
 def save_file_context(remote_addr, preseed, late_command, series=None):
     # Sanity check
-    if series and series in menu:
+    if series and series in supported:
         folder = os.path.join(app.root_path, 'ip', remote_addr, series)
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -100,7 +92,7 @@ def index():
             series = request.cookies.get('series')
         code = request.args.get('share')
     # Sanity check
-    if series and series in menu:
+    if series and series in supported:
         pass
     else:
         series = 'any'
@@ -109,7 +101,7 @@ def index():
     preseed = get_file_context(remote_addr, 'preseed.cfg', series, code)
     late_command = get_file_context(remote_addr, 'late_command', series, code)
     option = '<option value="any">any</option>'
-    for each in menu:
+    for each in supported:
         option = option + "\n          <option value=\"{series}\"".format(series=each)
         if series == each:
             option = option + " selected"
