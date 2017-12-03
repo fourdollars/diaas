@@ -3,45 +3,137 @@
   <head>
     <meta charset="utf-8"/>
     <title>debian-installer (d-i) as a service</title>
-<style>
+    <link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/shell/shell.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <style type=text/css>
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
-#preseed {
-  height: 95vh;
+
+textarea {
+  width: 100%;
+  height: 92vh;
+}
+
+.CodeMirror {
+  border-top: 1px solid black;
+  border-right: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  height: auto;
+  clear: both;
+}
+.top{
+  padding: 5px;
+}
+
+.bottom {
+  border-top: 1px solid black;
+  text-align: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.container {
+}
+
+.left {
   width: 50%;
   float: left;
   resize: none;
 }
-#late_command {
-  height: 95vh;
+
+.right {
   width: 50%;
   float: right;
   resize: none;
 }
-</style>
-<script>
+
+a {
+  color: #369;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a.project  {
+  color: #000;
+  text-decoration: none;
+  font-weight: 800;
+}
+a.project:hover {
+  text-decoration: underline;
+}
+    </style>
+    <script>
 window.history.replaceState('remove parameters', 'debian-installer (d-i) as a service', '{{ url_root }}');
-</script>
+    </script>
   </head>
   <body>
     <form method="post" id="form">
-      <center>
-        {{ preseed_path | safe }}
-        IP: {{ ip }}, Series:
-        <select name="series"
-          onchange="this.options[this.selectedIndex].value &&
-          (window.location = '{{ url_root }}?series=' + this.options[this.selectedIndex].value);">
-          {{ option | safe }}
-        </select>
-        <button type="submit" value="Save">Save</button>
-        {{ late_command_path | safe }}
-      </center>
-      <textarea type="textarea" name="preseed" id="preseed">{{ preseed }}</textarea>
-      <textarea type="textarea" name="late_command" id="late_command">{{ late_command }}</textarea>
-      <center>Project: <a href="https://fourdollars.github.io/diaas/">debian-installer (d-i) as a service</a>, Share: {{ share | safe }}</center>
+      <div class="top">
+        <span style="float:left;">
+          <big>
+            <a class="project" title="Project Site" href="https://fourdollars.github.io/diaas/">debian-installer (d-i) as a service</a>
+          </big>
+        </span>
+        <span style="float:right;font-weight:800;">
+          <button class="btn" onclick="return false;" title="Share your preseed.cfg and late_command to others" data-clipboard-text="{{ share | safe }}">
+            Copy &amp; Share
+          </button>
+        </span>
+        <center> Series
+          <select name="series"
+            onchange="this.options[this.selectedIndex].value &&
+            (window.location = '{{ url_root }}?series=' + this.options[this.selectedIndex].value);">
+            {{ option | safe }}
+          </select>
+          <button type="submit" value="Save">Save</button>
+        </center>
+      </div>
+      <div class="container">
+        <div class="left">
+          <textarea type="textarea" name="preseed" id="preseed">{{ preseed }}</textarea>
+        </div>
+        <div class="right">
+          <textarea type="textarea" name="late_command" id="late_command">{{ late_command }}</textarea>
+        </div>
+      </div>
+      <div class="clear"></div>
+      <div class="bottom">
+        <div class="left">
+          <small><a title="Preview preseed.cfg" href="{{ preseed_path | safe }}">{{ preseed_path | safe }}</a></small>
+        </div>
+        <div class="right">
+          <small><a title="Preview late_command" href="{{ late_command_path | safe }}">{{ late_command_path | safe }}</a></small>
+        </div>
+        <span><small>IP: {{ ip }}</small></span>
+      </div>
     </form>
+    </div>
   </body>
+<script>
+  var clipboard = new Clipboard('.btn');
+
+  var editor = CodeMirror.fromTextArea(document.getElementById('late_command'), {
+    mode: 'shell',
+    lineNumbers: true,
+    lineWrapping: true
+  });
+
+  var editor = CodeMirror.fromTextArea(document.getElementById('preseed'), {
+    mode: 'shell',
+    lineNumbers: true,
+    matchBrackets: true,
+    lineWrapping: true
+  });
+</script>
 </html>

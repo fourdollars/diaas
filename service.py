@@ -101,8 +101,8 @@ def index():
         pass
     else:
         series = 'any'
-    preseed_path = "<a href=\"" + url_root + series + "/preseed.cfg\">preseed.cfg</a>"
-    late_command_path = "<a href=\"" + url_root + series + "/late_command\">late_command</a>"
+    preseed_path = url_root + series + "/preseed.cfg"
+    late_command_path = url_root + series + "/late_command"
     preseed = get_file_context(remote_addr, 'preseed.cfg', series, code)
     late_command = get_file_context(remote_addr, 'late_command', series, code)
     option = '<option value="any">any</option>'
@@ -112,7 +112,7 @@ def index():
             option = option + " selected"
         option = option + ">{series}</option>".format(series=each)
     code = "%02x%02x%02x%02x" % tuple(int(num) for num in remote_addr.split('.'))
-    share = "<a href=\"{url}\">{url}</a>".format(url=request.url_root+"?share="+code+"&series="+series)
+    share = request.url_root + "?share=" + code + "&series=" + series
     response = make_response(render_template('preseed.html',
         ip=remote_addr,
         preseed=preseed,
