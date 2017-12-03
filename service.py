@@ -23,6 +23,9 @@ app = Flask(__name__)
 _pattern = re.compile("^([0-9a-f]{8})$")
 
 def get_file_path(remote_addr, file_name, series=None, code=None):
+    if code and code == "default":
+        return os.path.join(app.root_path, file_name)
+
     ip_addr = ''
     if code and _pattern.match(code):
         for i in (0,2,4,6):
@@ -30,7 +33,7 @@ def get_file_path(remote_addr, file_name, series=None, code=None):
         else:
             ip_addr = ip_addr[:-1]
 
-    if series:
+    if series and series in menu:
         if ip_addr:
             file_path = os.path.join(app.root_path, 'ip', ip_addr, series, file_name)
             if os.path.exists(file_path):
@@ -115,8 +118,8 @@ def index():
     share = request.url_root + "?share=" + code + "&series=" + series
     response = make_response(render_template('preseed.html',
         ip=remote_addr,
-        preseed=preseed,
-        late_command=late_command,
+        preseed=preseed.rstrip(),
+        late_command=late_command.rstrip(),
         preseed_path=preseed_path,
         late_command_path=late_command_path,
         option=option,

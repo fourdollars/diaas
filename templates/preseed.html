@@ -97,6 +97,7 @@ window.history.replaceState('remove parameters', 'debian-installer (d-i) as a se
             {{ option | safe }}
           </select>
           <button type="submit" value="Save">Save</button>
+          <button onclick="window.location = '{{ url_root }}?share=default';return false;">Load Default</button>
         </center>
       </div>
       <div class="container">
