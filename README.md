@@ -10,7 +10,7 @@
 
 `auto=true priority=critical url=sylee.org`
 
-  * Check [B.2. Using preseeding - B.2.3. Auto mode](https://www.debian.org/releases/stable/amd64/apbs02.html.en#preseed-auto) to see how Debian stable works.
+  * Check [B.2. Using preseeding - B.2.3. Auto mode](https://www.debian.org/releases/buster/amd64/apbs02.en.html#preseed-auto) to see how Debian stable works.
 
 ### Ubuntu
 
