@@ -32,6 +32,11 @@ If you need less prompts to achieve the fully automatic installation,
 
 ## Setup the service
 
-`pip install flask distro-info`
-
-`FLASK_DEBUG=1 FLASK_APP=service.py flask run`
+```
+$ git clone --depth=1 https://github.com/fourdollars/diaas.git
+$ cd diaas
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ FLASK_ENV=development FLASK_APP=service.py flask run --host=0.0.0.0
+```
