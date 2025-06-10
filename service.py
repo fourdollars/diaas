@@ -166,10 +166,10 @@ def save_file_context(remote_addr, preseed, late_command, series=None):
             os.makedirs(folder)
     file_path = os.path.join(folder, "preseed.cfg")
     with open(file_path, "w") as f:
-        f.write(preseed.encode("utf-8") + "\n")
+        f.write(preseed + "\n")
     file_path = os.path.join(folder, "late_command")
     with open(file_path, "w") as f:
-        f.write(late_command.encode("utf-8") + "\n")
+        f.write(late_command + "\n")
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -243,7 +243,7 @@ def preseed(series):
         url=url_root, series=series
     )
     with open(file_path) as f:
-        return Response(f.read().decode("utf-8") + late_command, mimetype="text/plain")
+        return Response(f.read() + late_command, mimetype="text/plain")
 
 
 @app.route("/<series>/late_command")
@@ -251,4 +251,4 @@ def preseed(series):
 def late_command(series):
     file_path = get_file_path(request.remote_addr, "late_command", series)
     with open(file_path) as f:
-        return Response(f.read().decode("utf-8"), mimetype="text/plain")
+        return Response(f.read(), mimetype="text/plain")
