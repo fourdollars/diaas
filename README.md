@@ -35,8 +35,6 @@ If you need less prompts to achieve the fully automatic installation,
 ```
 $ git clone --depth=1 https://github.com/fourdollars/diaas.git
 $ cd diaas
-$ virtualenv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-$ FLASK_ENV=development FLASK_APP=service.py flask run --host=0.0.0.0
+$ uv sync
+$ FLASK_ENV=development FLASK_APP=service.py uv run flask run --debug --host=0.0.0.0 --port=3456
 ```

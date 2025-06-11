@@ -1,0 +1,9 @@
+[project]
+name = "diaas"
+version = "0.1.0"
+description = "debian-installer (d-i) as a service"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.1",
+]
