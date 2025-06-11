@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import csv, os, re
+import csv
+import os
+import re
 from datetime import datetime
 from flask import Flask, Response, request, render_template, make_response
-from markupsafe import Markup
 
 
 def get_supported_distro_series_current_release(csv_file_path, eol_columns):
