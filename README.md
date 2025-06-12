@@ -36,5 +36,5 @@ If you need less prompts to achieve the fully automatic installation,
 $ git clone --depth=1 https://github.com/fourdollars/diaas.git
 $ cd diaas
 $ uv sync
-$ FLASK_ENV=development FLASK_APP=service.py uv run flask run --debug --host=0.0.0.0 --port=3456
+$ uv run gunicorn service:app -b 0.0.0.0:3456 -w 4
 ```
